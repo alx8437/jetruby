@@ -1,25 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import {v1} from "uuid";
 
-function App() {
+type Square = {
+  id: string,
+  color: string,
+  hidden: boolean,
+}
+//
+// type StateType = Array<Square>
+//
+
+const App = () => {
+
+  const [colors, setColors] = useState<Array<string>>(
+      ['red', 'orange', 'yellow', 'green', 'aquamarine', 'blue', 'magenta', 'indigo'])
+
+
+
+   colors.forEach((color, i) => {
+    const j = Math.floor(Math.random() * i)
+    const temp = colors[i]
+    colors[i] = colors[j]
+    colors[j] = temp
+  })
+
+
+  const allSmallSquares: Array<Square> = colors.map(c => ({id: v1(), color: c, hidden: true}))
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+        {allSmallSquares.map(s => <div>{s.color}</div>)}
+      </div>
   );
 }
 
