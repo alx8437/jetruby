@@ -1,44 +1,167 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {v1} from "uuid";
 
-type Square = {
+type CardType = {
     id: string,
     color: string,
-    hidden: boolean,
+    isFlipped: boolean,
+    canFlip: boolean,
 }
-//
-// type StateType = Array<Square>
-//
+
+// Sort function, algorithm by Donald Knut
+// return sorting input array
+const sortArray = (array: Array<string>) => {
+    array.forEach((color, i) => {
+        const j = Math.floor(Math.random() * i)
+        const temp = array[i]
+        array[i] = array[j]
+        array[j] = temp
+    })
+    return array
+}
+
+
+// function for set all card white color
+// return all card in white color
+// const setWhiteSquare = (card: Array<SquareType>): Array<SquareType> => {
+//     return card.map(s => ({...s, color: 'white'}))
+// }
+
+
+// Colors
+// This colors use in create card for game
+const colors = [
+    'red',
+    'orange',
+    'yellow',
+    'green',
+    'aquamarine',
+    'blue',
+    'magenta',
+    'indigo',
+]
+
+
+// Make double colors
+const doubleColors = colors.concat(...colors);
+
+// Sort all colors
+// return sorting array colors
+sortArray(doubleColors);
+
+
+// This function create card objects base on input colors
+// return array card for render in game
+const generateSquares = (colors: Array<string>): Array<CardType> => {
+    return colors.map(c => {
+        return {
+            id: v1(),
+            color: c,
+            isFlipped: true,
+            canFlip: true,
+        }
+    })
+}
+
 
 const App = () => {
 
-    const colors: Array<string> = [
-        'red', 'orange', 'yellow', 'green', 'aquamarine', 'blue', 'magenta', 'indigo',
-    ]
+    const [cards, setCards] = useState<Array<CardType>>(generateSquares(doubleColors));
+    const [canFlip, setCanFlip] = useState(false);
+    const [firstCard, setFirstCard] = useState<CardType | null>(null);
+    const [secondCard, setSecondCard] = useState<CardType | null>(null);
 
-
-    const sortArray = (array: Array<string>) => {
-        array.forEach((color, i) => {
-            const j = Math.floor(Math.random() * i)
-            const temp = array[i]
-            array[i] = array[j]
-            array[j] = temp
-        })
-        return array
+    function setCardIsFlipped(cardId: string, isFlipped: boolean) {
+        setCards(prev => prev.map(c =>
+            c.id !== cardId ? c : {...c, isFlipped}))
     }
 
-    const doubleColors = colors.concat(...colors);
+    function setCardCanFlip(cardId: string, canFlip: boolean) {
+        setCards(prev => prev.map(c =>
+            c.id !== cardId ? c : {...c, canFlip}))
+    }
 
-    sortArray(doubleColors);
+    // showcase
+    useEffect(() => {
+        setTimeout(() => {
+            let index = 0;
+            for (const card of cards) {
+                setTimeout(() => setCardIsFlipped(card.id, true), index++ * 100);
+            }
+            setTimeout(() => setCanFlip(true), cards.length * 100);
+        }, 90);
+    }, []);
 
+    function resetFirstAndSecondCards() {
+        debugger
+        setFirstCard(null);
+        setSecondCard(null);
+        console.log(firstCard, secondCard)
+    }
 
-    const allSmallSquares: Array<Square> = doubleColors.map(c => ({id: v1(), color: c, hidden: true}))
+    function onSuccessGuess() {
+        // @ts-ignore
+        setCardCanFlip(firstCard.id, false);
+        // @ts-ignore
+        setCardCanFlip(secondCard.id, false);
+        // @ts-ignore
+        setCardIsFlipped(firstCard.id, false);
+        // @ts-ignore
+        setCardIsFlipped(secondCard.id, false);
+        debugger
+        resetFirstAndSecondCards();
+    }
+
+    function onFailureGuess() {
+        // @ts-ignore
+        const firstCardID = firstCard.id;
+        // @ts-ignore
+        const secondCardID = secondCard.id;
+        debugger
+
+        setTimeout(() => {
+            setCardIsFlipped(firstCardID, true);
+        }, 100);
+        setTimeout(() => {
+            setCardIsFlipped(secondCardID, true);
+        }, 120);
+
+        resetFirstAndSecondCards();
+    }
+
+    useEffect(() => {
+        if (!firstCard || !secondCard)
+            return;
+        // @ts-ignore
+        (firstCard.imageURL === secondCard.imageURL) ? onSuccessGuess() : onFailureGuess();
+    }, [firstCard, secondCard]);
+
+    function onCardClick(card: CardType) {
+        if (!canFlip)
+            return;
+        if (!card.canFlip)
+            return;
+
+        if ((firstCard && (card.id === firstCard.id) || (secondCard && (card.id === secondCard.id))))
+
+            return;
+
+        setCardIsFlipped(card.id, false);
+
+        (firstCard) ? setSecondCard(card) : setFirstCard(card);
+    }
+
 
     return (
         <div className="App">
 
-            {allSmallSquares.map(s => <div key={s.id}>{s.color}</div>)}
+            {cards.map(card =>
+                <div
+                    style={{backgroundColor: card.isFlipped ? '' : card.color}}
+                    key={card.id}
+                    onClick={() => onCardClick(card)}
+                >{card.color}</div>)}
 
         </div>
     );
