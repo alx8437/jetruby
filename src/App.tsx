@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import './App.css';
+import styles from './App.module.css';
 import {v1} from "uuid";
+import {Card} from "./Components/Card/Card";
 
-type CardType = {
+export type CardType = {
     id: string,
     color: string,
     isFlipped: boolean,
@@ -94,7 +95,6 @@ const App = () => {
     }, []);
 
     function resetFirstAndSecondCards() {
-        debugger
         setFirstCard(null);
         setSecondCard(null);
         console.log(firstCard, secondCard)
@@ -109,7 +109,6 @@ const App = () => {
         setCardIsFlipped(firstCard.id, false);
         // @ts-ignore
         setCardIsFlipped(secondCard.id, false);
-        debugger
         resetFirstAndSecondCards();
     }
 
@@ -118,7 +117,6 @@ const App = () => {
         const firstCardID = firstCard.id;
         // @ts-ignore
         const secondCardID = secondCard.id;
-        debugger
 
         setTimeout(() => {
             setCardIsFlipped(firstCardID, true);
@@ -134,7 +132,7 @@ const App = () => {
         if (!firstCard || !secondCard)
             return;
         // @ts-ignore
-        (firstCard.imageURL === secondCard.imageURL) ? onSuccessGuess() : onFailureGuess();
+        (firstCard.color === secondCard.color) ? onSuccessGuess() : onFailureGuess();
     }, [firstCard, secondCard]);
 
     function onCardClick(card: CardType) {
@@ -154,14 +152,23 @@ const App = () => {
 
 
     return (
-        <div className="App">
+        <div className={styles.wrapper}>
 
+{/*
             {cards.map(card =>
                 <div
                     style={{backgroundColor: card.isFlipped ? '' : card.color}}
                     key={card.id}
                     onClick={() => onCardClick(card)}
                 >{card.color}</div>)}
+*/}
+
+            {cards.map(card =>
+                <Card
+                    key={card.id}
+                    onClick={() => onCardClick(card)}
+                    card={card}
+                >{card.color}</Card>)}
 
         </div>
     );
