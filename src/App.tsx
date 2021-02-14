@@ -69,9 +69,16 @@ const generateSquares = (colors: Array<string>): Array<CardType> => {
 const App = () => {
 
     const [cards, setCards] = useState<Array<CardType>>(generateSquares(doubleColors));
-    const [canFlip, setCanFlip] = useState(false);
+    const [canFlip, setCanFlip] = useState(true);
     const [firstCard, setFirstCard] = useState<CardType | null>(null);
     const [secondCard, setSecondCard] = useState<CardType | null>(null);
+
+    useEffect(() => {
+        if (!firstCard || !secondCard)
+            return;
+        (firstCard.color === secondCard.color) ? onSuccessGuess() : onFailureGuess();
+    }, [firstCard, secondCard]);
+
 
     function setCardIsFlipped(cardId: string, isFlipped: boolean) {
         setCards(prev => prev.map(c =>
@@ -83,57 +90,40 @@ const App = () => {
             c.id !== cardId ? c : {...c, canFlip}))
     }
 
-    // showcase
-    useEffect(() => {
-        setTimeout(() => {
-            let index = 0;
-            for (const card of cards) {
-                setTimeout(() => setCardIsFlipped(card.id, true), index++ * 100);
-            }
-            setTimeout(() => setCanFlip(true), cards.length * 100);
-        }, 90);
-    }, []);
-
     function resetFirstAndSecondCards() {
         setFirstCard(null);
         setSecondCard(null);
-        console.log(firstCard, secondCard)
     }
 
     function onSuccessGuess() {
-        // @ts-ignore
+        if (!firstCard || !secondCard)
+            return;
+
         setCardCanFlip(firstCard.id, false);
-        // @ts-ignore
         setCardCanFlip(secondCard.id, false);
-        // @ts-ignore
         setCardIsFlipped(firstCard.id, false);
-        // @ts-ignore
         setCardIsFlipped(secondCard.id, false);
         resetFirstAndSecondCards();
+
     }
 
     function onFailureGuess() {
-        // @ts-ignore
+        if (!firstCard || !secondCard)
+            return
+
         const firstCardID = firstCard.id;
-        // @ts-ignore
         const secondCardID = secondCard.id;
 
         setTimeout(() => {
             setCardIsFlipped(firstCardID, true);
-        }, 100);
+        }, 500);
         setTimeout(() => {
             setCardIsFlipped(secondCardID, true);
-        }, 120);
+        }, 500);
 
         resetFirstAndSecondCards();
     }
 
-    useEffect(() => {
-        if (!firstCard || !secondCard)
-            return;
-        // @ts-ignore
-        (firstCard.color === secondCard.color) ? onSuccessGuess() : onFailureGuess();
-    }, [firstCard, secondCard]);
 
     function onCardClick(card: CardType) {
         if (!canFlip)
@@ -142,7 +132,6 @@ const App = () => {
             return;
 
         if ((firstCard && (card.id === firstCard.id) || (secondCard && (card.id === secondCard.id))))
-
             return;
 
         setCardIsFlipped(card.id, false);
@@ -150,28 +139,26 @@ const App = () => {
         (firstCard) ? setSecondCard(card) : setFirstCard(card);
     }
 
+    function resetGame() {
+        generateSquares(doubleColors)
+        for (const card of cards) {
+            setCardIsFlipped(card.id, true);
+        }
+    }
 
-    return (
+
+    return <React.Fragment>
         <div className={styles.wrapper}>
-
-{/*
-            {cards.map(card =>
-                <div
-                    style={{backgroundColor: card.isFlipped ? '' : card.color}}
-                    key={card.id}
-                    onClick={() => onCardClick(card)}
-                >{card.color}</div>)}
-*/}
-
             {cards.map(card =>
                 <Card
                     key={card.id}
                     onClick={() => onCardClick(card)}
                     card={card}
                 >{card.color}</Card>)}
-
         </div>
-    );
+        <button onClick={resetGame}>Reset game</button>
+    </React.Fragment>
+
 }
 
 export default App;

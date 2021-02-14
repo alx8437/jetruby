@@ -18,6 +18,6 @@ export const Card: React.FC<CardPropsType> = ({onClick, card}) => {
         onClick={onCardClick}
         className={`${styles.card} + ${backgroundColor}` }
         style={{backgroundColor}}>
-        {/*{card.color}*/}
+        {card.color}
     </div>
 }
