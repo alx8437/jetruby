@@ -65,13 +65,14 @@ const generateSquares = (colors: Array<string>): Array<CardType> => {
     })
 }
 
-
 const App = () => {
 
     const [cards, setCards] = useState<Array<CardType>>(generateSquares(doubleColors));
     const [firstCard, setFirstCard] = useState<CardType | null>(null);
     const [secondCard, setSecondCard] = useState<CardType | null>(null);
 
+//This we add firstCard and secondCard in dependencies that
+//check changes and make render after it
     useEffect(() => {
         if (!firstCard || !secondCard)
             return;
@@ -95,10 +96,9 @@ const App = () => {
         setSecondCard(null);
     }
 
-    function onSuccessGuess() {
+    const onSuccessGuess = () => {
         if (!firstCard || !secondCard)
             return;
-
         setCardCanFlip(firstCard.id, false);
         setCardCanFlip(secondCard.id, false);
         setCardIsFlipped(firstCard.id, false);
@@ -106,7 +106,7 @@ const App = () => {
         resetFirstAndSecondCards();
     }
 
-    function onFailureGuess() {
+    const onFailureGuess = () => {
         if (!firstCard || !secondCard)
             return
 
@@ -119,10 +119,8 @@ const App = () => {
         setTimeout(() => {
             setCardIsFlipped(secondCardID, true);
         }, 500);
-
         resetFirstAndSecondCards();
     }
-
 
     const onCardClick = (card: CardType) => {
         if (!card.canFlip)
@@ -142,8 +140,6 @@ const App = () => {
     const resetGame = () => {
         sortArray(doubleColors);
         setCards(generateSquares(doubleColors));
-        setFirstCard(null);
-        setSecondCard(null);
     }
 
 
