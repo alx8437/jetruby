@@ -1,9 +1,21 @@
+.title {
+  text-align: center;
+  margin: 20px;
+  font-weight: bold;
+}
+
 .wrapper {
-  margin: 100px auto;
+  margin: 0 auto;
   width: 450px;
-  height: 400px;
+  height: 450px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+}
+
+.button {
+  display: block;
+  margin: 20px auto;
+  font-weight: bold;
 }

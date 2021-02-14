@@ -69,7 +69,6 @@ const generateSquares = (colors: Array<string>): Array<CardType> => {
 const App = () => {
 
     const [cards, setCards] = useState<Array<CardType>>(generateSquares(doubleColors));
-    const [canFlip, setCanFlip] = useState(true);
     const [firstCard, setFirstCard] = useState<CardType | null>(null);
     const [secondCard, setSecondCard] = useState<CardType | null>(null);
 
@@ -77,20 +76,21 @@ const App = () => {
         if (!firstCard || !secondCard)
             return;
         (firstCard.color === secondCard.color) ? onSuccessGuess() : onFailureGuess();
+
     }, [firstCard, secondCard]);
 
 
-    function setCardIsFlipped(cardId: string, isFlipped: boolean) {
+    const setCardIsFlipped = (cardId: string, isFlipped: boolean) => {
         setCards(prev => prev.map(c =>
             c.id !== cardId ? c : {...c, isFlipped}))
     }
 
-    function setCardCanFlip(cardId: string, canFlip: boolean) {
+    const setCardCanFlip = (cardId: string, canFlip: boolean) => {
         setCards(prev => prev.map(c =>
             c.id !== cardId ? c : {...c, canFlip}))
     }
 
-    function resetFirstAndSecondCards() {
+    const resetFirstAndSecondCards = () => {
         setFirstCard(null);
         setSecondCard(null);
     }
@@ -104,7 +104,6 @@ const App = () => {
         setCardIsFlipped(firstCard.id, false);
         setCardIsFlipped(secondCard.id, false);
         resetFirstAndSecondCards();
-
     }
 
     function onFailureGuess() {
@@ -125,13 +124,14 @@ const App = () => {
     }
 
 
-    function onCardClick(card: CardType) {
-        if (!canFlip)
-            return;
+    const onCardClick = (card: CardType) => {
         if (!card.canFlip)
             return;
 
-        if ((firstCard && (card.id === firstCard.id) || (secondCard && (card.id === secondCard.id))))
+        if ((firstCard && (card.id === firstCard.id)))
+            return;
+
+        if (secondCard && (card.id === secondCard.id))
             return;
 
         setCardIsFlipped(card.id, false);
@@ -139,15 +139,16 @@ const App = () => {
         (firstCard) ? setSecondCard(card) : setFirstCard(card);
     }
 
-    function resetGame() {
-        generateSquares(doubleColors)
-        for (const card of cards) {
-            setCardIsFlipped(card.id, true);
-        }
+    const resetGame = () => {
+        sortArray(doubleColors);
+        setCards(generateSquares(doubleColors));
+        setFirstCard(null);
+        setSecondCard(null);
     }
 
 
     return <React.Fragment>
+        <div className={styles.title}>Memo game</div>
         <div className={styles.wrapper}>
             {cards.map(card =>
                 <Card
@@ -156,9 +157,8 @@ const App = () => {
                     card={card}
                 >{card.color}</Card>)}
         </div>
-        <button onClick={resetGame}>Reset game</button>
+        <button className={styles.button} onClick={resetGame}>Reset game</button>
     </React.Fragment>
-
 }
 
 export default App;
