@@ -1,37 +1,20 @@
 import React, {useEffect, useState} from 'react';
 import styles from './App.module.css';
-import {v1} from "uuid";
 import {Card} from "./Components/Card/Card";
-
-export type CardType = {
-    id: string,
-    color: string,
-    isFlipped: boolean,
-    canFlip: boolean,
-}
-
-// Sort function, algorithm by Donald Knut
-// return sorting input array
-const sortArray = (array: Array<string>) => {
-    array.forEach((color, i) => {
-        const j = Math.floor(Math.random() * i)
-        const temp = array[i]
-        array[i] = array[j]
-        array[j] = temp
-    })
-    return array
-}
+import {generateCards, sortArray} from "./Utils/generateCards";
+import {CardType} from "./Redux/cardsReducer";
 
 
-// function for set all card white color
-// return all card in white color
-// const setWhiteSquare = (card: Array<SquareType>): Array<SquareType> => {
-//     return card.map(s => ({...s, color: 'white'}))
-// }
+
+
+
+
+
+
+
 
 
 // Colors
-// This colors use in create card for game
 const colors = [
     'red',
     'orange',
@@ -44,30 +27,17 @@ const colors = [
 ]
 
 
-// Make double colors
-const doubleColors = colors.concat(...colors);
-
-// Sort all colors
-// return sorting array colors
-sortArray(doubleColors);
+// This colors use in create card for game
 
 
-// This function create card objects base on input colors
-// return array card for render in game
-const generateSquares = (colors: Array<string>): Array<CardType> => {
-    return colors.map(c => {
-        return {
-            id: v1(),
-            color: c,
-            isFlipped: true,
-            canFlip: true,
-        }
-    })
-}
+
+
+
+
 
 const App = () => {
 
-    const [cards, setCards] = useState<Array<CardType>>(generateSquares(doubleColors));
+    const [cards, setCards] = useState<Array<CardType>>(generateCards(colors));
     const [firstCard, setFirstCard] = useState<CardType | null>(null);
     const [secondCard, setSecondCard] = useState<CardType | null>(null);
 
@@ -138,8 +108,8 @@ const App = () => {
     }
 
     const resetGame = () => {
-        sortArray(doubleColors);
-        setCards(generateSquares(doubleColors));
+        sortArray(colors);
+        setCards(generateCards(colors));
     }
 
 

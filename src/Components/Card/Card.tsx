@@ -1,6 +1,6 @@
 import React from "react"
-import {CardType} from "../../App";
 import styles from "./Card.module.css"
+import {CardType} from "../../Redux/cardsReducer";
 
 type CardPropsType = {
     onClick: (card: CardType) => void,
