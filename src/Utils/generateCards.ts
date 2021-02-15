@@ -1,6 +1,18 @@
 import {v1} from "uuid";
 import {CardType} from "../Redux/cardsReducer";
 
+//This colors are used when create cards for game
+const colors = [
+    'red',
+    'orange',
+    'yellow',
+    'green',
+    'aquamarine',
+    'blue',
+    'magenta',
+    'indigo',
+]
+
 // Make double colors
 // return double input array
 export const doubleArray = (array: Array<string>) => {
@@ -21,7 +33,7 @@ export const sortArray = (array: Array<string>) => {
 
 // This function create card objects base on input colors
 // return array card for render in game
-export const generateCards = (colors: Array<string>): Array<CardType> => {
+export const generateCards = (): Array<CardType> => {
     const doubleColors = doubleArray(colors);
     const sortColors = sortArray(doubleColors);
         return sortColors.map(c => {

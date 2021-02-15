@@ -1,117 +1,101 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import styles from './App.module.css';
 import {Card} from "./Components/Card/Card";
 import {generateCards, sortArray} from "./Utils/generateCards";
-import {CardType} from "./Redux/cardsReducer";
-
-
-
-
-
-
-
-
-
-
-
-// Colors
-const colors = [
-    'red',
-    'orange',
-    'yellow',
-    'green',
-    'aquamarine',
-    'blue',
-    'magenta',
-    'indigo',
-]
-
-
-// This colors use in create card for game
-
-
-
-
-
+import {
+    CardType,
+    setCardCanFlipAC,
+    setCardIsFlippedAC,
+    setFirstChoiceCardAC,
+    setMixCardsAC,
+    SetSecondChoiceCardAC
+} from "./Redux/cardsReducer";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./Redux/store";
 
 
 const App = () => {
 
-    const [cards, setCards] = useState<Array<CardType>>(generateCards(colors));
-    const [firstCard, setFirstCard] = useState<CardType | null>(null);
-    const [secondCard, setSecondCard] = useState<CardType | null>(null);
+    // Get parts of state
+    const cards = useSelector<AppRootStateType, Array<CardType>>(state => state.cards);
+    const firstChoiceCard = useSelector<AppRootStateType, CardType | null>(state => state.firstChoiceCard)
+    const secondChoiceCard = useSelector<AppRootStateType, CardType | null>(state => state.secondChoiceCard)
 
-//This we add firstCard and secondCard in dependencies that
-//check changes and make render after it
+    // Dispatch method
+    const dispatch = useDispatch();
+
+    // This we add firstChoiceCard and secondChoiceCard in dependencies that
+    // Check changes and make render after it
     useEffect(() => {
-        if (!firstCard || !secondCard)
+        console.log(cards)
+        console.log(firstChoiceCard)
+        console.log(secondChoiceCard)
+        if (!firstChoiceCard || !secondChoiceCard)
             return;
-        (firstCard.color === secondCard.color) ? onSuccessGuess() : onFailureGuess();
+        (firstChoiceCard.color === secondChoiceCard.color) ? onSuccessGuess() : onFailureGuess();
 
-    }, [firstCard, secondCard]);
+    }, [firstChoiceCard, secondChoiceCard]);
 
-
-    const setCardIsFlipped = (cardId: string, isFlipped: boolean) => {
-        setCards(prev => prev.map(c =>
-            c.id !== cardId ? c : {...c, isFlipped}))
-    }
-
-    const setCardCanFlip = (cardId: string, canFlip: boolean) => {
-        setCards(prev => prev.map(c =>
-            c.id !== cardId ? c : {...c, canFlip}))
-    }
-
+    // Clear value for first and second choice card
+    // Use dispatch method for sent action in reducer
     const resetFirstAndSecondCards = () => {
-        setFirstCard(null);
-        setSecondCard(null);
+        dispatch(setFirstChoiceCardAC(null));
+        dispatch(SetSecondChoiceCardAC(null));
+
     }
 
+    // Sending flipped and can be flipped
+    // After value both cards clear
     const onSuccessGuess = () => {
-        if (!firstCard || !secondCard)
+        if (!firstChoiceCard || !secondChoiceCard) {
             return;
-        setCardCanFlip(firstCard.id, false);
-        setCardCanFlip(secondCard.id, false);
-        setCardIsFlipped(firstCard.id, false);
-        setCardIsFlipped(secondCard.id, false);
+        }
+        dispatch(setCardCanFlipAC(firstChoiceCard.id, false));
+        dispatch(setCardCanFlipAC(secondChoiceCard.id, false));
+        dispatch(setCardIsFlippedAC(firstChoiceCard.id, false));
+        dispatch(setCardIsFlippedAC(secondChoiceCard.id, false));
         resetFirstAndSecondCards();
     }
 
+    // This function run when user guess both cards
+    // After value both cards clear
     const onFailureGuess = () => {
-        if (!firstCard || !secondCard)
-            return
-
-        const firstCardID = firstCard.id;
-        const secondCardID = secondCard.id;
-
+        if (!firstChoiceCard || !secondChoiceCard) {
+            return;
+        }
         setTimeout(() => {
-            setCardIsFlipped(firstCardID, true);
+            // setCardIsFlipped(firstChoiceCard.id, true);
+            dispatch(setCardIsFlippedAC(firstChoiceCard.id, true))
         }, 500);
         setTimeout(() => {
-            setCardIsFlipped(secondCardID, true);
+            // setCardIsFlipped(secondChoiceCard.id, true);
+            dispatch(setCardIsFlippedAC(secondChoiceCard.id, true))
         }, 500);
         resetFirstAndSecondCards();
     }
 
+    // This function run when onclick on card
+    // Compares value id choice and input card, if true then return
+    // Else sent card in firstChoiceCard or secondChoiceCard
     const onCardClick = (card: CardType) => {
-        if (!card.canFlip)
+        if (!card.canFlip) {
             return;
-
-        if ((firstCard && (card.id === firstCard.id)))
+        }
+        if ((firstChoiceCard && (card.id === firstChoiceCard.id))) {
             return;
-
-        if (secondCard && (card.id === secondCard.id))
+        }
+        if (secondChoiceCard && (card.id === secondChoiceCard.id)) {
             return;
-
-        setCardIsFlipped(card.id, false);
-
-        (firstCard) ? setSecondCard(card) : setFirstCard(card);
+        }
+        dispatch(setCardIsFlippedAC(card.id, false));
+        firstChoiceCard ? dispatch(SetSecondChoiceCardAC(card)) : dispatch(setFirstChoiceCardAC(card));
     }
 
+    // This function make reset game
     const resetGame = () => {
-        sortArray(colors);
-        setCards(generateCards(colors));
+        const mixCards = generateCards()
+        dispatch(setMixCardsAC(mixCards))
     }
-
 
     return <React.Fragment>
         <div className={styles.title}>Memo game</div>
