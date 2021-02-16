@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/jetruby/static/css/main.fed31375.chunk.css",
+    "main.js": "/jetruby/static/js/main.de9b2aa1.chunk.js",
+    "main.js.map": "/jetruby/static/js/main.de9b2aa1.chunk.js.map",
+    "runtime-main.js": "/jetruby/static/js/runtime-main.6d7b7353.js",
+    "runtime-main.js.map": "/jetruby/static/js/runtime-main.6d7b7353.js.map",
+    "static/js/2.6fee2d7a.chunk.js": "/jetruby/static/js/2.6fee2d7a.chunk.js",
+    "static/js/2.6fee2d7a.chunk.js.map": "/jetruby/static/js/2.6fee2d7a.chunk.js.map",
+    "static/js/3.0520ecc4.chunk.js": "/jetruby/static/js/3.0520ecc4.chunk.js",
+    "static/js/3.0520ecc4.chunk.js.map": "/jetruby/static/js/3.0520ecc4.chunk.js.map",
+    "index.html": "/jetruby/index.html",
+    "static/css/main.fed31375.chunk.css.map": "/jetruby/static/css/main.fed31375.chunk.css.map",
+    "static/js/2.6fee2d7a.chunk.js.LICENSE.txt": "/jetruby/static/js/2.6fee2d7a.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6d7b7353.js",
+    "static/js/2.6fee2d7a.chunk.js",
+    "static/css/main.fed31375.chunk.css",
+    "static/js/main.de9b2aa1.chunk.js"
+  ]
+}
