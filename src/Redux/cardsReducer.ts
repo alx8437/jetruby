@@ -3,7 +3,7 @@ import {generateCards} from "../Utils/generateCards";
 //CONST for action types
 enum ACTION_TYPES_CARDS {
     SET_MIX_CARDS = 'APP/SET_MIX_CARDS',
-    SET_CARDS_IS_FLIPPED = 'APP/SET_CARD_IS_FLIPPED',
+    SET_CARD_IS_FLIPPED = 'APP/SET_CARD_IS_FLIPPED',
     SET_CARD_CAN_FLIP = 'APP/SET_CARD_CAN_FLIP',
     SET_FIRST_CHOICE_CARD = 'APP/SET_FIRST_CHOICE_CARD',
     SET_SECOND_CHOICE_CARD = 'APP/SET_SECOND_CHOICE_CARD',
@@ -18,7 +18,7 @@ export type CardType = {
 }
 
 //State type
-type CardsStateType = {
+export type CardsStateType = {
     cards: Array<CardType>,
     firstChoiceCard:  CardType | null,
     secondChoiceCard: CardType | null,
@@ -27,7 +27,7 @@ type CardsStateType = {
 
 //Action creator types
 type SetCardIsFlippedActionType = {
-    type: ACTION_TYPES_CARDS.SET_CARDS_IS_FLIPPED,
+    type: ACTION_TYPES_CARDS.SET_CARD_IS_FLIPPED,
     cardId: string,
     isFlipped: boolean,
 }
@@ -72,7 +72,7 @@ export const cardsReducer = (state: CardsStateType = initialState, action: AllAc
                 ...state,
                 cards: state.cards.map(c => c.id === action.cardId ? {...c, canFlip: action.canFlip} : c)
             }
-        case ACTION_TYPES_CARDS.SET_CARDS_IS_FLIPPED:
+        case ACTION_TYPES_CARDS.SET_CARD_IS_FLIPPED:
             return {
                 ...state,
                 cards: state.cards.map(c => c.id === action.cardId ? {...c, isFlipped: action.isFlipped} : c)
@@ -102,7 +102,7 @@ export const cardsReducer = (state: CardsStateType = initialState, action: AllAc
 //ActionCreators
 export const setCardIsFlippedAC = (cardId: string, isFlipped: boolean): SetCardIsFlippedActionType => {
     return {
-        type: ACTION_TYPES_CARDS.SET_CARDS_IS_FLIPPED,
+        type: ACTION_TYPES_CARDS.SET_CARD_IS_FLIPPED,
         cardId,
         isFlipped,
     }
