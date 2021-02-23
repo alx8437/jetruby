@@ -3,9 +3,9 @@ import {
     cardsReducer,
     CardsStateType,
     CardType,
-    setCardCanFlipAC,
-    setCardIsFlippedAC,
-    setFirstChoiceCardAC, setMixCardsAC, SetSecondChoiceCardAC
+    setCardCanFlip,
+    setCardIsFlipped,
+    setFirstChoiceCard, setMixCards, setSecondChoiceCard
 } from "./cardsReducer";
 
 let startState: CardsStateType = {
@@ -27,7 +27,7 @@ beforeEach(() => {
 
 test('card is maybe flip', () => {
 
-    const action = setCardCanFlipAC(startState.cards[0].id, false);
+    const action = setCardCanFlip({cardId: startState.cards[0].id, canFlip: false});
     const endState = cardsReducer(startState, action);
 
     expect(endState.cards[0].canFlip).toBeFalsy();
@@ -35,7 +35,7 @@ test('card is maybe flip', () => {
 
 test('changed card is flipped', () => {
 
-    const action = setCardIsFlippedAC(startState.cards[0].id, false);
+    const action = setCardIsFlipped({cardId: startState.cards[0].id, isFlipped: false});
     const endState = cardsReducer(startState, action);
 
     expect(endState.cards[0].isFlipped).toBeFalsy();
@@ -43,7 +43,7 @@ test('changed card is flipped', () => {
 
 test('set first choice card', () => {
 
-    const action = setFirstChoiceCardAC(card);
+    const action = setFirstChoiceCard({card});
     const endState = cardsReducer(startState, action);
 
     expect(endState.firstChoiceCard).toEqual(card);
@@ -52,19 +52,19 @@ test('set first choice card', () => {
 
 test('set second choice card', () => {
 
-    const action = SetSecondChoiceCardAC(card);
+    const action = setSecondChoiceCard({card});
     const endState = cardsReducer(startState, action);
 
-    expect(endState.secondChoiceCard).toEqual(card);
+    expect(endState.secondChoiceCard).toBe(card);
     expect(endState.secondChoiceCard?.id).toBeDefined();
 })
 
 test('reset game by mixing cards', () => {
 
-    const newCardMix = generateCards();
-    const action = setMixCardsAC(newCardMix);
+    const newCardsMix = generateCards();
+    const action = setMixCards({cards: newCardsMix});
     const endState = cardsReducer(startState, action);
 
-    expect(endState.cards).toEqual(newCardMix);
+    expect(endState.cards).toEqual(newCardsMix);
     expect(startState.cards === endState.cards).toBeFalsy();
 })

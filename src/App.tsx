@@ -4,11 +4,11 @@ import {Card} from "./Components/Card/Card";
 import {generateCards} from "./Utils/generateCards";
 import {
     CardType,
-    setCardCanFlipAC,
-    setCardIsFlippedAC,
-    setFirstChoiceCardAC,
-    setMixCardsAC,
-    SetSecondChoiceCardAC
+    setCardCanFlip,
+    setCardIsFlipped,
+    setFirstChoiceCard,
+    setMixCards,
+    setSecondChoiceCard
 } from "./Redux/cardsReducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./Redux/store";
@@ -29,8 +29,8 @@ const App = () => {
     // Clear value for first and second choice card
     // Use dispatch method for sent action in reducer
     const resetFirstAndSecondCards = useCallback(() => {
-        dispatch(setFirstChoiceCardAC(null));
-        dispatch(SetSecondChoiceCardAC(null));
+        dispatch(setFirstChoiceCard({card: null}));
+        dispatch(setSecondChoiceCard({card: null}));
 
     }, [dispatch])
 
@@ -41,10 +41,10 @@ const App = () => {
         if (!firstChoiceCard || !secondChoiceCard) {
             return;
         }
-        dispatch(setCardCanFlipAC(firstChoiceCard.id, false));
-        dispatch(setCardCanFlipAC(secondChoiceCard.id, false));
-        dispatch(setCardIsFlippedAC(firstChoiceCard.id, false));
-        dispatch(setCardIsFlippedAC(secondChoiceCard.id, false));
+        dispatch(setCardCanFlip({cardId: firstChoiceCard.id, canFlip: false}));
+        dispatch(setCardCanFlip({cardId: secondChoiceCard.id, canFlip: false}));
+        dispatch(setCardIsFlipped({cardId: firstChoiceCard.id, isFlipped: false}));
+        dispatch(setCardIsFlipped({cardId: secondChoiceCard.id, isFlipped: false}));
         resetFirstAndSecondCards();
     }, [dispatch, firstChoiceCard, secondChoiceCard, resetFirstAndSecondCards])
 
@@ -56,10 +56,10 @@ const App = () => {
             return;
         }
         setTimeout(() => {
-            dispatch(setCardIsFlippedAC(firstChoiceCard.id, true))
+            dispatch(setCardIsFlipped({cardId: firstChoiceCard.id, isFlipped: true}))
         }, 500);
         setTimeout(() => {
-            dispatch(setCardIsFlippedAC(secondChoiceCard.id, true))
+            dispatch(setCardIsFlipped({cardId: secondChoiceCard.id, isFlipped: true}))
         }, 500);
         resetFirstAndSecondCards();
     }, [dispatch, firstChoiceCard, secondChoiceCard, resetFirstAndSecondCards])
@@ -88,15 +88,15 @@ const App = () => {
         if (secondChoiceCard && (card.id === secondChoiceCard.id)) {
             return;
         }
-        dispatch(setCardIsFlippedAC(card.id, false));
-        firstChoiceCard ? dispatch(SetSecondChoiceCardAC(card)) : dispatch(setFirstChoiceCardAC(card));
+        dispatch(setCardIsFlipped({cardId: card.id, isFlipped: false}));
+        firstChoiceCard ? dispatch(setSecondChoiceCard({card})) : dispatch(setFirstChoiceCard({card}));
     }, [dispatch, firstChoiceCard, secondChoiceCard])
 
 
     // This function make reset game
     const resetGame = () => {
         const mixCards = generateCards()
-        dispatch(setMixCardsAC(mixCards))
+        dispatch(setMixCards({cards: mixCards}))
     }
 
     return <React.Fragment>

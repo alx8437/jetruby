@@ -1,9 +1,12 @@
-import {createStore} from "redux";
+import {configureStore} from "@reduxjs/toolkit";
 import {cardsReducer} from "./cardsReducer";
 
 
-// Here create store
-export const store = createStore(cardsReducer);
+// Here create store, by configureStore from redux-toolkit
+export const store = configureStore({
+    reducer: cardsReducer,
+    middleware: getDefaultSettings => getDefaultSettings(),
+})
 
 //Create type object store
 export type AppRootStateType = ReturnType<typeof cardsReducer>
